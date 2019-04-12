@@ -1,0 +1,107 @@
+{
+  "project_info": {
+    "project_number": "417871164269",
+    "firebase_url": "https://dsss-79060.firebaseio.com",
+    "project_id": "dsss-79060",
+    "storage_bucket": "dsss-79060.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:417871164269:android:25d8da517ad4b16b",
+        "android_client_info": {
+          "package_name": "com.example.mohamedrashed.printer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "417871164269-pmpactt5i3q73p2cf31tn7e2nf9ll2h7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mohamedrashed.printer",
+            "certificate_hash": "e6c412e6ae7d468e6a12fbeee9441e82d847621d"
+          }
+        },
+        {
+          "client_id": "417871164269-4r0igll0uqa8siu26gfrrf8nnl2hr63p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0B-BGIH2R99rvpHZNKsVjGhTV79ubgC4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "417871164269-4r0igll0uqa8siu26gfrrf8nnl2hr63p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:417871164269:android:9d9107283a3ab6df",
+        "android_client_info": {
+          "package_name": "com.example.shadi.printerdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "417871164269-c8revdoa5rrb3tl64a9vjuv6dv2fshan.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.shadi.printerdemo",
+            "certificate_hash": "e6c412e6ae7d468e6a12fbeee9441e82d847621d"
+          }
+        },
+        {
+          "client_id": "417871164269-m8uj3lka6kgp6d996v4isgslt933jdmp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.shadi.printerdemo",
+            "certificate_hash": "432293d5a2f22892ad39234e149580032734c638"
+          }
+        },
+        {
+          "client_id": "417871164269-4r0igll0uqa8siu26gfrrf8nnl2hr63p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0B-BGIH2R99rvpHZNKsVjGhTV79ubgC4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "417871164269-4r0igll0uqa8siu26gfrrf8nnl2hr63p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
