@@ -1,8 +1,13 @@
 package com.example.shadi.printerdemo.Nav_Fragments;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,24 +16,30 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.shadi.printerdemo.Blog;
 import com.example.shadi.printerdemo.MainActivity;
 import com.example.shadi.printerdemo.R;
+import com.example.shadi.printerdemo.SplashScreen;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment {
 
+    private RecyclerView mBlogList ;
+    private DatabaseReference mDatabase;
+    private FirebaseAuth.AuthStateListener authListener;
+    private FirebaseAuth auth;
 
     public HomeFragment() {
         // Required empty public constructor
     }
-
-    ListView listView;
-    int [] img = {R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d };
-
-    String [] names = {"Letter a", "Letter b", "Letter c", "Letter d"};
-    String [] descrption = {"Description a", "Description b", "Description c", "Description d"};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,44 +47,71 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        //custom listView
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("order");
+
+        mBlogList = (RecyclerView) view.findViewById(R.id.blog_list);
+        mBlogList.setHasFixedSize(true);
+        mBlogList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mBlogList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        auth = FirebaseAuth.getInstance();
+
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    // user auth state is changed - user is null
+                    // launch login activity
+                    //   startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    //  finish();
+                }
 
 
-    return view;
+            }
+        };
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    //  user auth state is changed - user is null
+                    // launch login activity
+                    startActivity(new Intent(getContext(), SplashScreen.class));
+                }
+
+
+            }
+        };
+        auth = FirebaseAuth.getInstance();
+
+
+
+        return view;
 
     }
 
-    public class CustomAdapter extends BaseAdapter {
+    public void onStart() {
+        super.onStart();
 
-        @Override
-        public int getCount() {
-            return img.length ;
-        }
+        FirebaseRecyclerAdapter<Blog, MainActivity.BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Blog, MainActivity.BlogViewHolder>(
 
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
+                Blog.class,R.layout.blog_row,MainActivity.BlogViewHolder.class,mDatabase)
+        {
+            @Override
+            protected void populateViewHolder(MainActivity.BlogViewHolder viewHolder, Blog model, int position) {
 
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
+                viewHolder.setTitle(model.gettime());
+                viewHolder.setname(model.getname());
+                viewHolder.setFilament(model.getFilament());
+                viewHolder.setImage(getActivity(), model.getImage());
+            }
+        };
 
-        @Override
-        public View getView(int position, View view, ViewGroup parent) {
+        mBlogList.setAdapter(firebaseRecyclerAdapter);
+        mBlogList.setNestedScrollingEnabled(true);
+        auth.addAuthStateListener(authListener);
 
-            view = getLayoutInflater().inflate(R.layout.custom_list, null);
-            ImageView imageView = view.findViewById(R.id.imageView1);
-            TextView textView = view.findViewById(R.id.textView_name);
-            TextView textView1 = view.findViewById(R.id.textView_description);
-
-            imageView.setImageResource(img[position]);
-            textView.setText(names[position]);
-            textView1.setText(descrption[position]);
-
-            return view;
-        }
     }
 
 }
