@@ -30,7 +30,7 @@ public class Uploadfiletoserver extends AppCompatActivity implements View.OnClic
     private static final int PICK_FILE_REQUEST = 1;
     private static final String TAG = MainActivity.class.getSimpleName();
     private String selectedFilePath;
-    private String SERVER_URL = "http://217.55.137.30:62542/dashboard/upload1.php";
+    private String SERVER_URL = "http://3dpbs.serveo.net/android_upload.php";
     ImageView ivAttachment;
     Button bUpload;
     TextView tvFileName;
@@ -229,7 +229,7 @@ public class Uploadfiletoserver extends AppCompatActivity implements View.OnClic
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            tvFileName.setText("File Upload completed.\n\n You can see the uploaded file here: \n\n" + "http://coderefer.com/extras/uploads/" + fileName);
+                            tvFileName.setText("File Upload completed.\n\n");
                         }
                     });
                 }

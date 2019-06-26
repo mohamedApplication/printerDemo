@@ -1,14 +1,16 @@
 package com.example.shadi.printerdemo;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -48,13 +50,13 @@ public class MainActivity extends AppCompatActivity
 
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
-    FloatingActionButton fab;
 
-    Fragment fragment;
-    FragmentTransaction transaction;
 
+    private RecyclerView mBlogList ;
+    private DatabaseReference mDatabase;
 
     //Action Button
+    FloatingActionButton fab;
 
     @Override
 
@@ -62,34 +64,90 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED){
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},100);
+                return;
+            }
+        }
+    fab= (FloatingActionButton)findViewById(R.id.fab);
+    fab.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            startActivity(new Intent(MainActivity.this,PostActivity.class));
 
-        fragment = new HomeFragment();
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment, "Home_Fragment");
-        transaction.commitNow();
+        }
+    });
+      //  Toast.makeText(Proofile.this, "1", Toast.LENGTH_SHORT).show();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("order");
+        mBlogList = (RecyclerView) findViewById(R.id.blog_list);
+        mBlogList.setHasFixedSize(true);
+        mBlogList.setLayoutManager(new LinearLayoutManager(this));
+        mBlogList.setLayoutManager(new LinearLayoutManager(this));
+
+
+    //    Toast.makeText(Proofile.this, "2", Toast.LENGTH_SHORT).show();
+        auth = FirebaseAuth.getInstance();
+
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    // user auth state is changed - user is null
+                    // launch login activity
+                    //   startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    //  finish();
+                }
+
+
+            }
+        };
+
+
+       // Toast.makeText(Proofile.this, "3", Toast.LENGTH_SHORT).show();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer,toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener((MainActivity.this));
+        navigationView.setNavigationItemSelectedListener(this);
         auth = FirebaseAuth.getInstance();
 
-        fab= (FloatingActionButton)findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        authListener = new FirebaseAuth.AuthStateListener() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, PostActivity.class));
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    //  user auth state is changed - user is null
+                      // launch login activity
+                         startActivity(new Intent(MainActivity.this, SplashScreen.class));
+                        finish();
+                }
+
 
             }
-        });
+        };
+
+    }
+
+@Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,@NonNull int[] grantResults){
+        if (requestCode==100 && (grantResults[0]==PackageManager.PERMISSION_GRANTED)){
+
+        }else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},100);
+            }
+        }
 
 
     }
@@ -127,7 +185,10 @@ public class MainActivity extends AppCompatActivity
         }
         if (item.getItemId() == R.id.action_add) {
 
+
+
             startActivity(new Intent(MainActivity.this,PostActivity.class));
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -148,41 +209,27 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
 
             // Handle the camera action
-        }
-        else if (id == R.id.nav_home) {
-            fragment = new HomeFragment();
-            transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, fragment, "Home_Fragment");
-            transaction.commitNow();
+        } else if (id == R.id.nav_home) {
+
+          // getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 
 
-        }
-        else if (id == R.id.nav_designs) {
-            fragment = new HomeFragment();
-            transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, fragment, "Home_Fragment");
-            transaction.commitNow();
+        } else if (id == R.id.nav_designs) {
 
-        }
-        else if (id == R.id.nav_about) {
+         //    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DesignsFragment()).commit();
 
-            fragment = new AboutFragment();
-            transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, fragment, "Home_Fragment");
-            transaction.commitNow();
+        } else if (id == R.id.nav_about) {
+
+          //    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AboutFragment()).commit();
 
         }else if (id == R.id.nav_account) {
-            fragment = new AccountFragment();
-            transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, fragment, "Home_Fragment");
-            transaction.commitNow();
 
+             //  getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AccountFragment()).commit();
+            startActivity(new Intent(MainActivity.this, User_Setting.class));
         }else if (id == R.id.nav_contact) {
 
-            fragment = new ContactFragment();
-            transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, fragment, "Home_Fragment");
-            transaction.commitNow();
+          //    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ContactFragment()).commit();
+
 
         } else if (id == R.id.nav_logout) {
 
@@ -201,17 +248,31 @@ public class MainActivity extends AppCompatActivity
         auth.signOut();
     }
 
+    protected void onStart() {
+        super.onStart();
 
+        FirebaseRecyclerAdapter<Blog, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Blog, BlogViewHolder>(
 
+                Blog.class,
+                R.layout.blog_row,
+                BlogViewHolder.class,
+                mDatabase
 
+        ) {
+            @Override
+            protected void populateViewHolder(BlogViewHolder viewHolder, Blog model, int position) {
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (authListener != null) {
-            auth.removeAuthStateListener(authListener);
-        }
+                viewHolder.setTitle(model.gettime());
+                viewHolder.setname(model.getname());
+                viewHolder.setFilament(model.getFilament());
+                viewHolder.setImage(getApplicationContext(), model.getImage());
+            }
+        };
+        mBlogList.setAdapter(firebaseRecyclerAdapter);
+        auth.addAuthStateListener(authListener);
+
     }
+
     public static class BlogViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
@@ -243,9 +304,17 @@ public class MainActivity extends AppCompatActivity
 
 
             TextView post_desc = (TextView) mView.findViewById(R.id.Post_desc);
-            post_desc.setText("Filament : "+Image);
+             post_desc.setText("Filament : "+Image);
 
         }
     }
 
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (authListener != null) {
+            auth.removeAuthStateListener(authListener);
+        }
+    }
 }
